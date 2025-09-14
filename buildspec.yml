@@ -20,8 +20,8 @@ phases:
       - IMAGE_TAG=${IMAGE_TAG_FULL:0:7}
       - export REPOSITORY_URI
       - export IMAGE_TAG
-      - echo "Repository URI: $REPOSITORY_URI"
-      - echo "Image Tag: $IMAGE_TAG"
+      - echo Repository URI: $REPOSITORY_URI
+      - echo Image Tag: $IMAGE_TAG
 
   build:
     commands:
