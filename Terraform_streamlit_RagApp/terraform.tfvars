@@ -7,7 +7,7 @@ my_secret_value        = "arn:aws:secretsmanager:us-east-1:826695974453:secret:a
 github_connection_arn = "arn:aws:codeconnections:us-east-1:826695974453:connection/a1587b46-c4b3-47cb-b7da-fc8081bb4a98"
 
 github_owner = "applied-gen-ai"
-github_repo  = "rag_automation_deploy"
+github_repo  = "ragapp-automation-deploy"
 github_branch = "main"
 project_name = "rag-app"
 ecs_cluster_name  = "RagApp-fargate-cluster"

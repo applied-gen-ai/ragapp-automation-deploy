@@ -170,10 +170,20 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         Effect   = "Allow",
         Action   = ["codestar-connections:UseConnection"],
         Resource = var.github_connection_arn
-      }
+      },
+      # ➜ ADD THIS BLOCK
+      {
+  Effect   = "Allow",
+  Action   = [
+    "codebuild:StartBuild",
+    "codebuild:BatchGetBuilds"
+  ],
+  Resource = var.codebuild_project_arn
+}
     ]
   })
 }
+
 
 
 #################################
@@ -270,5 +280,5 @@ resource "aws_iam_role" "codedeploy_role" {
 
 resource "aws_iam_role_policy_attachment" "codedeploy_policy" {
   role       = aws_iam_role.codedeploy_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForECS"
+  policy_arn = "arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS"
 }

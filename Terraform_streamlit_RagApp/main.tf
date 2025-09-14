@@ -12,6 +12,7 @@ module "iam" {
   project_name          = var.project_name
   environment           = var.environment
   github_connection_arn = var.github_connection_arn
+  codebuild_project_arn  = module.CI-CD.codebuild_project_arn
 
   artifact_bucket_name  = module.CI-CD.artifact_bucket_name
   artifact_bucket_arn   = module.CI-CD.artifact_bucket_arn

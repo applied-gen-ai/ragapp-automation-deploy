@@ -22,3 +22,8 @@ variable "artifact_bucket_name" {
   description = "Name of the S3 bucket for CodePipeline artifacts"
   type        = string
 }
+
+variable "codebuild_project_arn" {
+  description = "ARN of the CodeBuild project used by CodePipeline"
+  type        = string
+}

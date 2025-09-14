@@ -9,6 +9,12 @@ resource "aws_ecs_service" "rag-app-service" {
     type = "CODE_DEPLOY"
   }
 
+    load_balancer {
+    target_group_arn = aws_lb_target_group.blue.arn
+    container_name   = "my-container"
+    container_port   = 8501
+  }
+
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 

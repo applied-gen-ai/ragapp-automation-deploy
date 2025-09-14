@@ -28,3 +28,8 @@ output "codepipeline_arn" {
   description = "ARN of the CodePipeline"
   value       = aws_codepipeline.Ragapp_pipeline.arn
 }
+
+output "codebuild_project_arn" {
+  description = "ARN of the CodeBuild project"
+  value       = aws_codebuild_project.Ragapp_build.arn
+}
