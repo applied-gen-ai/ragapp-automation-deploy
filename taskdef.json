@@ -1,0 +1,25 @@
+{
+  "family": "rag-app",
+  "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::826695974453:role/ecsTaskExecutionRole",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "my-container",
+      "image": "<IMAGE1_NAME>",
+      "portMappings": [
+        { "containerPort": 8501, "protocol": "tcp" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/rag-app",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

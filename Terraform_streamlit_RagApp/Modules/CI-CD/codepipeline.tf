@@ -90,7 +90,7 @@ stage {
       ApplicationName                = aws_codedeploy_app.ecs_app.name
       DeploymentGroupName            = aws_codedeploy_deployment_group.ecs_blue_green.deployment_group_name
       TaskDefinitionTemplateArtifact = "build_output"        # must match
-      TaskDefinitionTemplatePath     = "imagedefinitions.json"  # or your json file
+      TaskDefinitionTemplatePath = "taskdef.json"  # or your json file
       # Optional: only if you package appspec in the artifact
       AppSpecTemplateArtifact        = "build_output"
       AppSpecTemplatePath            = "appspec.yml"
