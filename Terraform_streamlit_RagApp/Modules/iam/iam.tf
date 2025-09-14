@@ -171,16 +171,14 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         Action   = ["codestar-connections:UseConnection"],
         Resource = var.github_connection_arn
       },
-      # ➜ ADD THIS BLOCK
       {
-  Effect   = "Allow",
-  Action   = [
-    "codebuild:StartBuild",
-    "codebuild:BatchGetBuilds"
-  ],
-  Resource = var.codebuild_project_arn
-},
-
+        Effect   = "Allow",
+        Action   = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds"
+        ],
+        Resource = var.codebuild_project_arn
+      },
       {
         Effect = "Allow",
         Action = [
@@ -192,9 +190,16 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codedeploy:GetDeploymentConfig"
         ],
         Resource = "*"
+      },
+      # 🔑 Add ECS permissions here
+      {
+        Effect = "Allow",
+        Action = [
+          "ecs:RegisterTaskDefinition",
+          "ecs:DescribeTaskDefinition"
+        ],
+        Resource = "*"
       }
-  
-  
     ]
   })
 }
