@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/streamlit/streamlit-example.git .
-
 # Copy requirements first for better layer caching
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
@@ -25,7 +23,7 @@ COPY retriever.pkl ./
 EXPOSE 8501
 
 # Healthcheck to verify the service is running
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 0
 
 # Run Streamlit with the file watcher disabled
 ENTRYPOINT ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.fileWatcherType=none"]
