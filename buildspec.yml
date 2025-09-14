@@ -31,7 +31,7 @@ phases:
       - docker build -t "$REPOSITORY_URI:$IMAGE_TAG" .
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
 
-   post_build:
+  post_build:
     commands:
       - echo "Pushing Docker image..."
       - docker push "$REPOSITORY_URI:$IMAGE_TAG"
