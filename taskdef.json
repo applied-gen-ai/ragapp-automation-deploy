@@ -1,10 +1,10 @@
 {
   "family": "rag-app",
   "networkMode": "awsvpc",
-  "executionRoleArn": "arn:aws:iam::826695974453:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::826695974453:role/rag-app-ecsTaskExecutionRole",
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "256",
-  "memory": "512",
+  "cpu": "1024",
+  "memory": "2048",
   "containerDefinitions": [
     {
       "name": "my-container",
