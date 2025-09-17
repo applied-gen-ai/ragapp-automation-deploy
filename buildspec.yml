@@ -18,15 +18,15 @@ phases:
       - IMAGE_TAG="$(echo $IMAGE_TAG_FULL | cut -c 1-7)"
       - export REPOSITORY_URI
       - export IMAGE_TAG
-      - echo "Repository URI: $REPOSITORY_URI"
-      - echo "Image Tag: $IMAGE_TAG"
+      - echo "Repository URI:$REPOSITORY_URI"
+      - echo "Image Tag:$IMAGE_TAG"
       - echo "Logging in to ECR..."
       - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$REPOSITORY_URI"
       - echo "Ensuring ECR repository exists..."
       - aws ecr describe-repositories --repository-names "$ECR_REPO_NAME" --region "$AWS_REGION" || aws ecr create-repository --repository-name "$ECR_REPO_NAME" --region "$AWS_REGION"
       - echo "Checking Dockerfile..."
       - test -f Dockerfile && echo "Dockerfile exists" || (echo "Dockerfile missing!" ; exit 1)
-
+  
   build:
     commands:
       - echo "Listing files in build context..."
@@ -34,7 +34,7 @@ phases:
       - echo "Building Docker image..."
       - docker build -t "$REPOSITORY_URI:$IMAGE_TAG" .
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
-
+  
   post_build:
     commands:
       - echo "Pushing Docker image to ECR..."
