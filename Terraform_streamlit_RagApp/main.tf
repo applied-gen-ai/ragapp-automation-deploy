@@ -89,9 +89,9 @@ module "CI-CD" {
   ecs_service_name      = module.ecs-service.ecs_service_name
   alb_listener_arn      = module.ecs-service.alb_listener_arn
   alb_test_listener_arn = module.ecs-service.alb_test_listener_arn
-  blue_target_group     = module.ecs-service.blue_target_group
-  green_target_group    = module.ecs-service.green_target_group
-  
+  blue_tg_name  = module.ecs-service.blue_tg_name
+  green_tg_name = module.ecs-service.green_tg_name
+
 
   codebuild_role_arn    = module.iam.codebuild_role_arn
   codedeploy_role_arn   = module.iam.codedeploy_role_arn

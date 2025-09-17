@@ -42,7 +42,7 @@ resource "aws_lb" "ecs_alb" {
 
 # Blue Target Group
 resource "aws_lb_target_group" "blue" {
-  name        = "${var.name}-blue-tg"
+  name        = "rag-b"
   port        = var.container_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -61,7 +61,7 @@ resource "aws_lb_target_group" "blue" {
 
 # Green Target Group
 resource "aws_lb_target_group" "green" {
-  name        = "${var.name}-green-tg"
+  name        = "rag-g"
   port        = var.container_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id

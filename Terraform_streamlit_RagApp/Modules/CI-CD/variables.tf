@@ -9,8 +9,8 @@ variable "ecs_cluster_name" {}
 variable "ecs_service_name" {}
 variable "alb_listener_arn" {}
 variable "alb_test_listener_arn" {}
-variable "blue_target_group" {}
-variable "green_target_group" {}
+
+
 
 variable "project_name" {}
 variable "environment" {}
@@ -37,6 +37,16 @@ variable "buildspec_file" {
 
 variable "appspec_file" {
   description = "Path to appspec.yml"
+  type        = string
+}
+
+variable "blue_tg_name" {
+  description = "Name of the blue target group"
+  type        = string
+}
+
+variable "green_tg_name" {
+  description = "Name of the green target group"
   type        = string
 }
 

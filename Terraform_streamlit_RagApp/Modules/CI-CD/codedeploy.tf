@@ -8,7 +8,7 @@ resource "aws_codedeploy_deployment_group" "ecs_blue_green" {
   deployment_group_name = "${var.project_name}-ecs-deployment"
   service_role_arn      = var.codedeploy_role_arn
 
-    deployment_style {
+  deployment_style {
     deployment_type   = "BLUE_GREEN"
     deployment_option = "WITH_TRAFFIC_CONTROL"
   }
@@ -21,16 +21,19 @@ resource "aws_codedeploy_deployment_group" "ecs_blue_green" {
   }
 
   load_balancer_info {
-    target_group_pair_info {
-      prod_traffic_route {
-        listener_arns = [var.alb_listener_arn]        # ✅ use variable
+  target_group_pair_info {
+    prod_traffic_route {
+      listener_arns = [var.alb_listener_arn]
+    }
+    test_traffic_route {
+      listener_arns = [var.alb_test_listener_arn]
+    }
+    target_group {
+        name = var.blue_tg_name   # ✅ must be name
       }
-      test_traffic_route {
-        listener_arns = [var.alb_test_listener_arn]   # ✅ use variable
+      target_group {
+        name = var.green_tg_name  # ✅ must be name
       }
-
-      target_group { name = var.blue_target_group }   # ✅ use variable
-      target_group { name = var.green_target_group }  # ✅ use variable
     }
   }
 
@@ -39,7 +42,6 @@ resource "aws_codedeploy_deployment_group" "ecs_blue_green" {
       action_on_timeout    = "CONTINUE_DEPLOYMENT"
       wait_time_in_minutes = 0
     }
-
     terminate_blue_instances_on_deployment_success {
       action                          = "TERMINATE"
       termination_wait_time_in_minutes = 5
@@ -51,3 +53,4 @@ resource "aws_codedeploy_deployment_group" "ecs_blue_green" {
     events  = ["DEPLOYMENT_FAILURE"]
   }
 }
+
