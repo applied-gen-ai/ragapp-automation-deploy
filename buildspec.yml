@@ -23,17 +23,14 @@ phases:
       - echo "Logging in to ECR..."
       - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$REPOSITORY_URI"
       - echo "Ensuring ECR repository exists..."
-      - |
-        if ! aws ecr describe-repositories --repository-names "$ECR_REPO_NAME" --region "$AWS_REGION"; then
-          aws ecr create-repository --repository-name "$ECR_REPO_NAME" --region "$AWS_REGION"
-        fi
+      - if ! aws ecr describe-repositories --repository-names "$ECR_REPO_NAME" --region "$AWS_REGION" > /dev/null 2>&1; then aws ecr create-repository --repository-name "$ECR_REPO_NAME" --region "$AWS_REGION"; fi
+      - echo "Checking Dockerfile..."
+      - if [ -f Dockerfile ]; then echo "Dockerfile exists"; else echo "Dockerfile missing!" && exit 1; fi
 
   build:
     commands:
-      - echo "Listing files in the build context..."
+      - echo "Listing files in build context..."
       - ls -al
-      - echo "Checking Dockerfile..."
-      - test -f Dockerfile && echo "Dockerfile exists" || (echo "Dockerfile missing!" && exit 1)
       - echo "Building Docker image..."
       - docker build -t "$REPOSITORY_URI:$IMAGE_TAG" .
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
