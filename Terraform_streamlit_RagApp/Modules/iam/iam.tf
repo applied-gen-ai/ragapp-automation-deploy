@@ -246,7 +246,7 @@ resource "aws_iam_policy" "codebuild_ecr_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # Allow pushing to ECR
+      # ECR permissions - UPDATED with missing permissions
       {
         Effect   = "Allow",
         Action   = [
@@ -256,11 +256,17 @@ resource "aws_iam_policy" "codebuild_ecr_policy" {
           "ecr:GetDownloadUrlForLayer",
           "ecr:InitiateLayerUpload",
           "ecr:PutImage",
-          "ecr:UploadLayerPart"
+          "ecr:UploadLayerPart",
+          "ecr:BatchGetImage",
+          # NEW: Add these missing permissions
+          "ecr:DescribeRepositories",
+          "ecr:CreateRepository",
+          "ecr:DescribeImages",
+          "ecr:ListImages"
         ],
         Resource = "*"
       },
-      # Allow writing logs
+      # CloudWatch Logs permissions
       {
         Effect   = "Allow",
         Action   = [
@@ -270,7 +276,7 @@ resource "aws_iam_policy" "codebuild_ecr_policy" {
         ],
         Resource = "*"
       },
-      # Allow access to S3 artifacts
+      # S3 artifacts permissions
       {
         Effect = "Allow",
         Action = [
@@ -282,6 +288,14 @@ resource "aws_iam_policy" "codebuild_ecr_policy" {
           var.artifact_bucket_arn,
           "${var.artifact_bucket_arn}/*"
         ]
+      },
+      # NEW: Add STS permissions for debugging
+      {
+        Effect = "Allow",
+        Action = [
+          "sts:GetCallerIdentity"
+        ],
+        Resource = "*"
       }
     ]
   })
