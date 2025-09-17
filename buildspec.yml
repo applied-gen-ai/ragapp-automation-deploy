@@ -22,22 +22,15 @@ phases:
       - IMAGE_TAG="$(echo $IMAGE_TAG_FULL | cut -c 1-7)"
       - export REPOSITORY_URI
       - export IMAGE_TAG
-      - echo "Repository URI: $REPOSITORY_URI"
-      - echo "Image Tag: $IMAGE_TAG"
+      - echo "Repository URI=$REPOSITORY_URI"
+      - echo "Image Tag=$IMAGE_TAG"
       - echo "Logging in to ECR..."
       - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$REPOSITORY_URI"
       - echo "Checking if ECR repository exists..."
-      - |
-        if aws ecr describe-repositories --repository-names "$ECR_REPO_NAME" --region "$AWS_REGION" >/dev/null 2>&1; then
-          echo "Repository $ECR_REPO_NAME already exists"
-        else
-          echo "Repository $ECR_REPO_NAME does not exist, creating..."
-          aws ecr create-repository --repository-name "$ECR_REPO_NAME" --region "$AWS_REGION"
-          echo "Repository created successfully"
-        fi
+      - aws ecr describe-repositories --repository-names "$ECR_REPO_NAME" --region "$AWS_REGION" || aws ecr create-repository --repository-name "$ECR_REPO_NAME" --region "$AWS_REGION"
       - echo "Checking Dockerfile..."
       - test -f Dockerfile && echo "Dockerfile exists" || (echo "Dockerfile missing!" && exit 1)
-  
+
   build:
     commands:
       - echo "=== BUILD PHASE STARTED ==="
@@ -54,7 +47,7 @@ phases:
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
       - echo "Verifying image was created..."
       - docker images | grep "$ECR_REPO_NAME" || (echo "Image not found after build!" && exit 1)
-  
+
   post_build:
     commands:
       - echo "=== POST-BUILD PHASE STARTED ==="
