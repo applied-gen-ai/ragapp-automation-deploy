@@ -19,7 +19,6 @@ resource "aws_ecs_task_definition" "app" {
     image = var.ecr_image_url # Replace with your container image
     portMappings = [{
       containerPort = 8501
-      hostPort      = 8501
       protocol      = "tcp"
     }]
     logConfiguration = {
@@ -40,10 +39,18 @@ resource "aws_ecs_task_definition" "app" {
 # 7. Security Group for ALB & ECS
 resource "aws_security_group" "alb_sg" {
   name        = "alb-sg"
-  description = "Allow 8501"
-  vpc_id = var.vpc_id
+  description = "Allow HTTP/HTTPS for ALB"
+  vpc_id      = var.vpc_id
 
+  # Allow browser traffic on port 80
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
+  # Keep this only if you want to reach 8501 directly (not required if all goes through port 80)
   ingress {
     from_port   = 8501
     to_port     = 8501
