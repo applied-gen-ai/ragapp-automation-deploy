@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "app" {
   family                   = "my-app"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "1024"
-  memory                   = "2048"
+  cpu                      = "2024"
+  memory                   = "3048"
   execution_role_arn = var.execution_role_arn
   task_role_arn      = var.task_role_arn
 
