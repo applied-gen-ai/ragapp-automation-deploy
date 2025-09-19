@@ -13,7 +13,12 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-# Copy all application files
+# ✅ Pre-download the Hugging Face model so it's inside the image
+#    This creates a cached copy under /root/.cache/huggingface/…
+#    No token needed if the model is public.
+RUN python -c "from sentence_transformers import CrossEncoder; CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')"
+
+# Copy application code and assets
 COPY *.py ./
 COPY *.pdf ./
 COPY faiss_index/ ./faiss_index/

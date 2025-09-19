@@ -2,7 +2,7 @@ from sentence_transformers import CrossEncoder
 import numpy as np
 
 
-cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-12-v2")
+cross_encoder = CrossEncoder("/app/model/cross-encoder/ms-marco-MiniLM-L-12-v2")
 def cross_encoder_func(query, documents, k=5):
 
     pairs = [[query, doc.page_content] for doc in documents]
