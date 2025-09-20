@@ -38,10 +38,9 @@ phases:
       - echo "Checking Docker daemon..."
       - docker version
       - docker info
-      - echo "Building Docker image with verbose output..."
-      # Fixed: Use a simpler approach - remove tee to preserve exit status
+      - echo "Building Docker image..."
       - docker build --no-cache --progress=plain -t "$REPOSITORY_URI:$IMAGE_TAG" .
-      - echo "Docker build completed successfully, tagging image..."
+      - echo "Docker build completed, tagging image..."
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
       - echo "Verifying image was created..."
       - docker images | grep "$ECR_REPO_NAME" || (echo "Image not found after build!" && exit 1)
