@@ -23,7 +23,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_groq import ChatGroq
 from sentence_transformers import CrossEncoder
 import streamlit as st
-from filter_docs import cross_encoder_func
 
 import torch
 
@@ -74,23 +73,11 @@ embeddings = HuggingFaceEmbeddings(
 
 def format_docs(input):
     return '\n'.join([doc.page_content for doc in input])
-     
-
-def filter_retrieved_docs(query, docs):
-     final_docs = []
-     final_scores = []
-     scores = cross_encoder_func(query, docs)
-     for i in range(len(scores)):
-          logit = normalize_logit(scores[i])
-          final_scores.append(logit)
-          if logit>0.2:
-               final_docs.append(docs[i])
-     return final_docs, final_scores
               
 
 def model_predict(query):
-    DEFAULT_MODEL = "llama-3.1-8b-instant"
-    ALTERNATE_MODEL = "mixtral-8x7b-32768"
+    DEFAULT_MODEL = "llama-3.3-70b-versatile"
+    ALTERNATE_MODEL = "llama-3.1-8b-instant"
 
     def get_groq_model():
         try:
@@ -117,14 +104,10 @@ Get the knowledge from below knowledge base:
 
     retrieved_docs = similarity_search(query, embeddings, k=5)
 
-    final_ret_docs, final_scores = filter_retrieved_docs(query, retrieved_docs)
-
     retrieved_docs_out = [i.page_content for i in retrieved_docs]
 
-    final_ret_docs_out = [i.page_content for i in final_ret_docs]
-
-    if len(final_ret_docs)>0:
-        formatted_docs = format_docs(final_ret_docs)
+    if len(retrieved_docs)>0:
+        formatted_docs = format_docs(retrieved_docs)
     else:
          formatted_docs = ''
 
@@ -144,8 +127,6 @@ Get the knowledge from below knowledge base:
     return {
         "prompt": prompt_str, 
         "retrieved_docs": retrieved_docs_out,  # Raw retrieved documents
-        "scores":final_scores, 
-        "final_ret_docs": final_ret_docs_out,
         "formatted_context": formatted_docs,  # Processed text from retrieved docs
         "llm_response": llm_response  # Generated answer,
     }
