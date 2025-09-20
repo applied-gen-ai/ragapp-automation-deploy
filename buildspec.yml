@@ -38,18 +38,9 @@ phases:
       - echo "Checking Docker daemon..."
       - docker version
       - docker info
-      - echo "Building Docker image with verbose output..."
-      # Fixed: Use PIPESTATUS to capture the actual build result
-      - |
-        docker build --no-cache --progress=plain -t "$REPOSITORY_URI:$IMAGE_TAG" . 2>&1 | tee build.log
-        BUILD_STATUS=${PIPESTATUS[0]}
-        if [ $BUILD_STATUS -ne 0 ]; then
-          echo "Docker build failed with status $BUILD_STATUS"
-          echo "Build log contents:"
-          cat build.log
-          exit $BUILD_STATUS
-        fi
-      - echo "Docker build completed successfully, tagging image..."
+      - echo "Building Docker image..."
+      - docker build --no-cache --progress=plain -t "$REPOSITORY_URI:$IMAGE_TAG" .
+      - echo "Docker build completed, tagging image..."
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
       - echo "Verifying image was created..."
       - docker images | grep "$ECR_REPO_NAME" || (echo "Image not found after build!" && exit 1)
