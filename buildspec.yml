@@ -1,5 +1,4 @@
 version: 0.2
-
 env:
   variables:
     AWS_REGION: "us-east-1"
@@ -8,7 +7,6 @@ env:
     ECS_CLUSTER_NAME: "RagApp-fargate-cluster"
     ECS_SERVICE_NAME: "rag-app-service"
     ECS_CONTAINER_NAME: "my-container"
-
 phases:
   pre_build:
     commands:
@@ -30,7 +28,6 @@ phases:
       - aws ecr describe-repositories --repository-names "$ECR_REPO_NAME" --region "$AWS_REGION" || aws ecr create-repository --repository-name "$ECR_REPO_NAME" --region "$AWS_REGION"
       - echo "Checking Dockerfile..."
       - test -f Dockerfile && echo "Dockerfile exists" || (echo "Dockerfile missing!" && exit 1)
-
   build:
     commands:
       - echo "=== BUILD PHASE STARTED ==="
@@ -42,12 +39,20 @@ phases:
       - docker version
       - docker info
       - echo "Building Docker image with verbose output..."
-      - docker build --no-cache --progress=plain -t "$REPOSITORY_URI:$IMAGE_TAG" . 2>&1 | tee build.log
-      - echo "Docker build completed, tagging image..."
+      # Fixed: Use PIPESTATUS to capture the actual build result
+      - |
+        docker build --no-cache --progress=plain -t "$REPOSITORY_URI:$IMAGE_TAG" . 2>&1 | tee build.log
+        BUILD_STATUS=${PIPESTATUS[0]}
+        if [ $BUILD_STATUS -ne 0 ]; then
+          echo "Docker build failed with status $BUILD_STATUS"
+          echo "Build log contents:"
+          cat build.log
+          exit $BUILD_STATUS
+        fi
+      - echo "Docker build completed successfully, tagging image..."
       - docker tag "$REPOSITORY_URI:$IMAGE_TAG" "$REPOSITORY_URI:latest"
       - echo "Verifying image was created..."
       - docker images | grep "$ECR_REPO_NAME" || (echo "Image not found after build!" && exit 1)
-
   post_build:
     commands:
       - echo "=== POST-BUILD PHASE STARTED ==="
@@ -61,7 +66,6 @@ phases:
       - echo "Contents of imagedefinitions.json:"
       - cat imagedefinitions.json
       - echo "=== BUILD COMPLETED SUCCESSFULLY ==="
-
 artifacts:
   files:
     - imagedefinitions.json
